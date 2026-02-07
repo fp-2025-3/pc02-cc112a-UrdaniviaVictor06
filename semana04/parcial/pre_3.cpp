@@ -3,7 +3,7 @@
 
 using namespace std;
 
-const int N = 5; // 5 esta bien  
+const int N = 8; // 5 esta bien  
 
 bool esFilaDominanteEstricta(int (*M)[N], int f){  //f es la fila no el indice
 
@@ -51,9 +51,36 @@ bool esFilaDominanteEstricta(int (*M)[N], int f){  //f es la fila no el indice
 
 
 bool esFilaFuertementeDominante(int (*M)[N], int f){
+    if(esFilaDominanteEstricta(M, f) == false){
+        return false;
+    }
 
-    
-    return true;
+    int sumaFinal[N]; //arreglo de ceros
+    for(int i=0; i<N; i++){
+        sumaFinal[i] =0;
+    }
+
+    //recorremos matriz
+    int indice=0;
+    for( int (*i)[N]=M; i<M +N; i++){ 
+        for(int *j = *i; j< *i + N; j++){ 
+            sumaFinal[indice] += *j;
+        }
+        indice++;
+    } //el arreglo tiene la suma de cada fila
+
+    int contador=0;
+    for(int i=0; i<N; i++){
+        if(i == f-1) continue;
+
+        if(sumaFinal[i] < sumaFinal[f-1]) contador++;
+        
+    }
+    if(contador ==N-1){
+        return true;
+    } else {
+        return false;
+    }
 }
 
 void imprimirSalida(int (*M)[N], int n){
@@ -108,7 +135,7 @@ int main(){
     
     llenado(M, n);
     imprimir(M, n);
-    
+
     imprimirSalida(M, n);
 
 
