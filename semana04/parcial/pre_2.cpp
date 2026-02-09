@@ -84,6 +84,13 @@ void buscarNombre(char *buscar, char *lista[N], int *tiempo, int n){
     cout << "\nCorredor no encontrado\n";
 }
 
+void buscarIntervalo(char *lista[N], int *tiempo, int n, int inf, int sup){
+    for(int i=0; i<n; i++){
+        if(tiempo[i] < sup && tiempo[i] > inf){
+            cout<<lista[i]<< " -- "<<tiempo[i]  << " segundos \n";
+        }
+    }
+}
 
 void imprimirDatosFinal(char *lista[N], int *tiempo, int n){
     for(int i=0; i<n; i++){
@@ -109,11 +116,7 @@ int main(){
     int tiempo[n_atle];
 
     leerDatos(lista, tiempo, n_atle);
-    /*
-    imprimirDatos(lista, tiempo, n_atle);
-
-    cout << " --------------------------------\n";
-    */
+   
     ordenarPorTiempo(lista, tiempo, n_atle);
     
     cout<< "\n RANKING FINAL\n";
@@ -126,9 +129,18 @@ int main(){
     buscarNombre(buscar, lista, tiempo, n_atle);
 
 
+    int inf, sup;
+    cout<<"Ingrese el tiempo minimo y maximo a buscar : ";
+    cin >> inf;
+    cin >> sup;
+    cout<< "\n Corredores en el rango ["<<inf<< " , "<<sup<< " ]\n";
+    buscarIntervalo(lista, tiempo, n_atle, inf, sup);
+
+
     for(int i=0; i<n_atle; i++){
         delete[] lista[i];
     }
+    
 
     return 0;
 }
