@@ -75,7 +75,7 @@ void sumaPol(struct polinomio *A, struct polinomio *B, struct polinomio *C){
 
     //sumando todo en un nuevo array;
     float coef[orden[0].n];
-    int n_max=orden[0].n;
+    int n_max = orden[0].n;
 
     for(int i=0; i< n_max; i++){
         coef[i] =0; // todos son ceros
@@ -102,37 +102,53 @@ void sumaPol(struct polinomio *A, struct polinomio *B, struct polinomio *C){
 }
 
 
-void multiplicacion(struct polinomio A, int n_a, struct polinomio B, int n_b){
-    int n_total= (n_a - 1) + (n_b - 1);
-    n_total++;
-    
-    float *suma= new float[n_total]; //reservo 
-    for(int i=0; i<n_total; i++){
-        suma[i]=0; //todos ceros
+void multiplicacion(struct polinomio *A, struct polinomio *B, struct polinomio *C){
+
+    // suponiendo n=3; y 2 multiplicaciones
+
+    int n_1= (A->n -1) + (B->n -1) +1; // A x B
+    float *suma_1 = new float[n_1]; // reservo
+    for(int i=0; i < A->n ; i++){ //recorres al A
+        for(int j=0; j< B->n; j++){
+            suma_1[i+j] +=  A->coef[i] * B->coef[j];
+        }
     }
 
-    int indice=0;
-    for(int i=0; i< n_a ; i++){
-        
-        for(int j=0; j<n_b; j++){
-            suma[j+indice] = suma[j+indice] +A.coef[i]*B.coef[j]; //suma escalonada
+    int n_2= (n_1 -1) + (C->n -1) +1; // AB x C
+    float *suma_2 = new float[n_2]; // reservo
+    for(int i=0; i < n_1 ; i++){ //recorres al AB
+        for(int j=0; j< C->n; j++){
+            suma_2[i+j] +=  suma_1[i] * C->coef[j]; //joder que sencillo
         }
-        indice++;
     }
 
     //imprimir
-    cout << "\nLa multiplicacion de los polinomios es : ";
-    for(int i=0; i<n_total; i++){
-        cout << suma[i]<< "x^"<< n_total-i-1;
+     cout <<"\nLa multiplicacion de loss tres polinomios: ";
+     for(int i=0; i< n_2 ; i++){
+        if(suma_2[i] == 0) continue;
 
-        if(i != n_total-1){
-            cout << " + ";
-        }
+        cout << suma_2[i];
+        if(i!=n_2-1) cout <<"x^"<<n_2 -i-1;
+
+        if(i != n_2 -1) cout << " + ";
+        
     }
-    cout <<endl;
-    delete[] suma;
+    cout << endl;
+   
+
+    delete[] suma_2;
+    delete[] suma_1;
 }
 
+void liberarEspacio(struct polinomio *A, struct polinomio *B, struct polinomio *C){
+    delete[] A->coef;
+    delete[] B->coef;
+    delete[] C->coef;
+
+    delete A;
+    delete B;
+    delete C;
+}
 
 
 int main(){
@@ -156,10 +172,9 @@ int main(){
  
     sumaPol(A, B, C);
 
-    multiplicacion();
+    multiplicacion(A, B, C);
+
+    liberarEspacio(A, B, C);
  
-    delete A;
-    delete B;
-    delete C;
     return 0;
 }
