@@ -105,16 +105,67 @@ void rellenarDatos(struct seleccion *lista, int n){
         lista[i].rendimiento = float ( lista[i].puntajeTotal )/3;
     }
 }
- /*
+
 void ordenarLista(struct seleccion *lista, int n){
+    
+    for(int i=0; i<n-1; i++){ //recorre toda la funcion
+        struct seleccion maximo=lista[i];
+        int indice = i;
+        for(int j=i; j<n; j++){
+            if(lista[j].puntajeTotal > maximo.puntajeTotal){
+                maximo = lista[j];
+                indice = j;
+            }
+
+        }
+        //ya tengo el maximo
+        swap(lista[i], lista[indice]);
+    }
+
+    //ahora ordenar por diferencia de goles
+    for(int j=0; j<n-1; j++){
+        for(int i=0; i<n-1; i++){
+            if(lista[i].puntajeTotal == lista[i+1].puntajeTotal){
+                if(lista[i].totales.diferencia < lista[i+1].totales.diferencia){
+                    swap(lista[i], lista[i+1]);
+                }
+            
+            }
+        }
+    }
+
+
+    //ahora ordenar por goles a favor
+    for(int j=0; j<n-1; j++){
+        for(int i=0; i<n-1; i++){
+            if(lista[i].puntajeTotal == lista[i+1].puntajeTotal){
+                if(lista[i].totales.diferencia == lista[i+1].totales.diferencia){
+                    if(lista[i].totales.favor < lista[i+1].totales.favor){
+                        swap(lista[i], lista[i+1]);
+                    }
+                }
+            }
+        }
+    }
+
+
+}
+
+void imprimirCampeon(struct seleccion *lista, int n){
     struct seleccion maximo=lista[0];
     for(int i=0; i<n; i++){
         if(lista[i].puntajeTotal > maximo.puntajeTotal){
-            maximo = lista[i];
+            maximo =lista[i];
         }
     }
+
+    //ya tenemos al maximo
+    cout <<"\nCampeon : "<<maximo.nombre << maximo.id;
+    cout << " | Puntaje : " << maximo.puntajeTotal;
+    cout << " | DG : "<<maximo.totales.diferencia; 
+    cout << " | Rendimiento : "<< maximo.rendimiento;
+    cout << "%\n";
 }
-*/
 
 
 void imprimirLista(struct seleccion *lista, int n){
@@ -155,9 +206,11 @@ int main(){
     struct seleccion *lista = new struct seleccion[n]; // array de 5 partidos
     rellenarDatos(lista, n);
 
-    //    ordenarLista(lista, n);
+    ordenarLista(lista, n);
 
     imprimirLista(lista, n);
+
+    imprimirCampeon(lista, n);
 
     return 0;
 }
