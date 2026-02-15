@@ -12,169 +12,211 @@ struct polinomio{
 
 //______________________________________________
 
-void rellenarDatos(struct polinomio *A, int n_a, struct polinomio *B, int n_b, struct polinomio *C,
-    int n_c){
+void rellenarDatos(struct polinomio *array, int n){
 
-    // array dinamico
-    A->coef = new float[n_a];
-    B->coef = new float[n_b];
-    C->coef = new float[n_c];
+    // supongamos que n=3 
+    array[0].coef = new float[array[0].n];
+    array[1].coef = new float[array[1].n];
+    array[2].coef = new float[array[2].n];
 
     //rellenando
-    A->coef[0] =  1;
-    A->coef[1] = 0;
-    A->coef[2] = 3;
+    array[0].coef[0] =  1;
+    array[0].coef[1] = 0;
+    array[0].coef[2] = 3;
 
-    B->coef[0] = -4;
-    B->coef[1] = 5;
+    array[1].coef[0] = -4;
+    array[1].coef[1] = 5;
 
-    C->coef[0] = 3;
-    C->coef[1] = 0;
-    C->coef[2] = 1;
+    array[2].coef[0] = 3;
+    array[2].coef[1] = 0;
+    array[2].coef[2] = 1;
 
+    /*tomando otros datos 
+    array[0].coef[0] = 3;
+    array[0].coef[1] = 2;
+    array[0].coef[2] = 7;
 
+    array[1].coef[0] = -3;
+    array[1].coef[1] = 5;
+
+    array[2].coef[0] = 1;
+    array[2].coef[1] = 2;
+    array[2].coef[2] = 3;
+    */
 }
 
 
-void mostrarPol(struct polinomio *A, int n){
-    for(int i=0; i< n;i++){
-        if(A->coef[i] == 0) continue;
+void mostrarPol(struct polinomio *array, int n){
+   for(int i=0; i<n; i++){  // recorremos todos los polinomios
+    cout << "Polinomio "<<i+1 << " : ";
+    for(int j=0; j< array[i].n ; j++){  // esto recorreo el polinomio i
+        if(array[i].coef[j] == 0) continue;
 
-        cout << A->coef[i];
-        if(i!=n-1) cout <<"x^"<<n-i-1;
+        cout << array[i].coef[j];
+        if(j!=array[i].n-1) cout <<"x^"<<array[i].n -j-1;
 
-        if(i != n-1) cout << " + ";
+        if(j != array[i].n -1) cout << " + ";
         
     }
     cout << endl;
+
+   }
 }
 
-void sumaPol(struct polinomio *A, struct polinomio *B, struct polinomio *C){
-    struct polinomio orden[3] = {*A, *B, *C}; // vamos a ordenarlos
+void sumaPol(struct polinomio *array, int n){
 
-    for(int i=0; i<3; i++){
-        // tomamos como maximo al mayor
-        int maximo = orden[i].n;
-        int indice=i;
-        for(int j=i; j<3; j++){
-            if(orden[j].n > orden[indice].n){
+    /*                                              Cantidad maxima = 3
+        La funcion que deeo crear debera sumar       [1, 0, 3]  diferencia = 0  |
+        todos los elementos de una columna, y       [x ,-4 , 5]  diferencia = 1 |
+        si se trata de un polinomio con grado in-   [3, 0 ,1]   diferencia = 0  | 
+        ferior al polinomio de mayor grado,       ----------------------------  V
+        entonces se usara la diferncia para 
+        trasladar la suma k_i espacios 
+        (k_i =diferencia entre el polinomio i y el de mayor grado)
+     */
+
+
+
+    // encontremos el polinomio de mayor grado
+        int indice=0;
+        for(int j=0; j<n; j++){
+            if(array[j].n > array[indice].n){
                 indice = j;
-                maximo = orden[indice].n;
             }
         }
         // ya tengo al maximo
-        swap(orden[i], orden[indice]); // ordenando de mayor a menor
-    }
+        int n_max=array[indice].n;
+    
 
-    // al ser n polinomios (n=3), debo tener n-1 diferencias
-    int diferencia[3];
+    // al ser n polinomios (n=3), debo tener n diferencias
+    int diferencia[n];
 
-    for(int i=0; i <3; i++){
-        diferencia[i] = orden[0].n - orden[i].n ;
-    }
+    for(int i=0; i <n; i++)    diferencia[i] = array[indice].n - array[i].n ;
+    
 
     //sumando todo en un nuevo array;
-    float coef[orden[0].n];
-    int n_max = orden[0].n;
+    float *coef_1= new float[n_max]; //reservando memoria
 
-    for(int i=0; i< n_max; i++){
-        coef[i] =0; // todos son ceros
-    }
-
-    for(int i=0; i<n_max; i++){ //recorres todas los polinomios
-        for(int j=0; j<orden[i].n; j++){ // recorres cada polinomio
-            coef[j + diferencia[i]] += orden[i].coef[j];
+    for(int i=0; i< n_max; i++)    coef_1[i] =0; // todos son ceros
+    
+    for(int i=0; i<3; i++){ //recorremos todas los polinomios
+        for(int j=0; j<array[i].n; j++){ // recorres cada polinomio
+            coef_1[j + diferencia[i]] += array[i].coef[j];  
         }
     }
 
     cout <<"\nLa suma de los tres polinomios: ";
      for(int i=0; i< n_max ; i++){
-        if(coef[i] == 0) continue;
+        if(coef_1[i] == 0) continue;
 
-        cout << coef[i];
+        cout << coef_1[i];
         if(i!=n_max-1) cout <<"x^"<<n_max -i-1;
 
         if(i != n_max -1) cout << " + ";
         
     }
     cout << endl;
-
+    delete[] coef_1;
 }
 
 
-void multiplicacion(struct polinomio *A, struct polinomio *B, struct polinomio *C){
+void multiplicacion(struct polinomio *array, int n){
 
-    // suponiendo n=3; y 2 multiplicaciones
+    /* Suponiendo n=3, entonces se requieres dos operaciones de multiplicacion
+    A x B x C = array_total
+    Esta funcion deberá multiplicar dos polinomios consecutivos (A y B), los guardara en un
+    arreglo y volvera a mutiplicar dos polinomios consecutivos (AB y C), nuevamente los 
+    almacenara y seguira su proceso n-1 veces
+    */
 
-    int n_1= (A->n -1) + (B->n -1) +1; // A x B
-    float *suma_1 = new float[n_1]; // reservo
-    for(int i=0; i < A->n ; i++){ //recorres al A
-        for(int j=0; j< B->n; j++){
-            suma_1[i+j] +=  A->coef[i] * B->coef[j];
+    // vamos a multiplicar n-1 veces,
+    
+    // primero creamos un array dinamico para empezar con el bucle for
+    int n_1= (array[0].n -1 ) + (array[1].n -1) +1;
+    float *coef_2 = new float[n_1]; // memoria dinamica
+
+    for(int i=0; i<n_1; i++) coef_2[i] =0; // relleno con puros ceros
+
+    
+    for(int i=0; i< n-1; i++){
+        if( i == 0){
+
+            for(int i_1=0; i_1 < array[i].n ; i_1++){ //recorres al primer polinomio
+                for(int j=0; j< array[i+1].n; j++){ // recorremos el segundo polinomio
+                    coef_2[i_1+j] +=  array[i].coef[i_1] * array[i+1].coef[j]; 
+                
+                }
+            }
+
+        } else { // si entras aqui es porque estamos multiplicando y almacenando en dos arrays
+
+            int n_2= (n_1 -1 ) + (array[i+1].n -1) +1;
+            float *coef_3 = new float[n_2]; // memoria dinamica
+
+            for(int i=0; i<n_2; i++) coef_3[i] =0; // relleno con puros ceros
+
+            for(int i_1=0; i_1 < n_1 ; i_1++){ //recorres al primer polinomio
+                for(int j=0; j< array[i+1].n; j++){ // recorremos el segundo polinomio
+                    coef_3[i_1+j] +=  coef_2[i_1] * array[i+1].coef[j]; 
+                    // almacenamos todo en el coef_3
+                }
+            }
+
+            delete[] coef_2; // el puntero coef_2 apunta al vacio (puntero colgante)
+                            // osea que delete[] borra la informacion que viene despues del puntero
+                            // mas no el puntero, por eso el puntero aun existe pero no esta siendo usado    
+            coef_2 = coef_3;
+            n_1 = n_2;
+
+            // borras informacion de puntero viejo y puntero viejo apunta a puntero nuevo
+
         }
+        
     }
 
-    int n_2= (n_1 -1) + (C->n -1) +1; // AB x C
-    float *suma_2 = new float[n_2]; // reservo
-    for(int i=0; i < n_1 ; i++){ //recorres al AB
-        for(int j=0; j< C->n; j++){
-            suma_2[i+j] +=  suma_1[i] * C->coef[j]; //joder que sencillo
-        }
-    }
 
     //imprimir
      cout <<"\nLa multiplicacion de loss tres polinomios: ";
-     for(int i=0; i< n_2 ; i++){
-        if(suma_2[i] == 0) continue;
+     for(int i=0; i< n_1 ; i++){
+        if(coef_2[i] == 0) continue;
 
-        cout << suma_2[i];
-        if(i!=n_2-1) cout <<"x^"<<n_2 -i-1;
+        cout << coef_2[i];
+        if(i!=n_1-1) cout <<"x^"<<n_1 -i-1;
 
-        if(i != n_2 -1) cout << " + ";
+        if(i != n_1 -1) cout << " + ";
         
     }
     cout << endl;
-   
 
-    delete[] suma_2;
-    delete[] suma_1;
+    delete[] coef_2;
 }
 
-void liberarEspacio(struct polinomio *A, struct polinomio *B, struct polinomio *C){
-    delete[] A->coef;
-    delete[] B->coef;
-    delete[] C->coef;
+void liberarEspacio(struct polinomio *array, int n){
+    for(int i=0; i< n; i++){
+        delete[] array[i].coef;
+    }
 
-    delete A;
-    delete B;
-    delete C;
 }
 
 
 int main(){
    
-    struct polinomio *A = new struct polinomio;
-    struct polinomio *B = new struct polinomio;
-    struct polinomio *C = new struct polinomio;
+    int n_t= 3; //cantidad de elementos
+    struct polinomio *arreglo= new struct polinomio[n_t]; // array de n polinomios  
 
-    A->n = 3;
-    B->n = 2;
-    C->n = 3;
+    arreglo[0].n = 3;
+    arreglo[1].n = 2;
+    arreglo[2].n = 3;
 
-    rellenarDatos(A, A->n, B, B->n, C, C->n);
+    rellenarDatos(arreglo, n_t); // array de polinomios y entero
 
-    cout << "Polinomio 1: ";
-    mostrarPol(A, A->n);
-    cout << "Polinomio 2: ";
-    mostrarPol(B, B->n);
-    cout << "Polinomio 3: ";
-    mostrarPol(C, C->n);
- 
-    sumaPol(A, B, C);
+    mostrarPol(arreglo, n_t);
 
-    multiplicacion(A, B, C);
+    sumaPol(arreglo, n_t);
 
-    liberarEspacio(A, B, C);
+    multiplicacion(arreglo, n_t);
+
+    liberarEspacio(arreglo, n_t);
  
     return 0;
 }
