@@ -89,7 +89,7 @@ void sumaPol(struct polinomio *array, int n){
     
 
     // al ser n polinomios (n=3), debo tener n diferencias
-    int diferencia[n];
+    int *diferencia = new int[n]; // memoria dinamica
 
     for(int i=0; i <n; i++)    diferencia[i] = array[indice].n - array[i].n ;
     
@@ -117,6 +117,7 @@ void sumaPol(struct polinomio *array, int n){
     }
     cout << endl;
     delete[] coef_1;
+    delete[] diferencia;
 }
 
 
