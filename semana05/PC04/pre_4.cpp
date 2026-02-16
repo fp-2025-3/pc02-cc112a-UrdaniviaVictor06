@@ -25,7 +25,7 @@ struct item crearItem(const char *descripcion, int cantidad, double precio){
     struct item nuevo;
 
     // rellenando el item
-    nuevo.descripcion = new char; //reserva memoria
+    nuevo.descripcion = new char[30]; //reserva memoria
     strcpy(nuevo.descripcion, descripcion); // copiar 
 
     nuevo.cantidad = cantidad;
@@ -40,7 +40,7 @@ struct pedido *crearPedido(int numero, const char *cliente, int cantidadItems){
     //rellenando el pedido
     cliente1->numeroPedido = numero;
 
-    cliente1->nombreCliente = new char ; 
+    cliente1->nombreCliente = new char [30]; 
     strcpy(cliente1->nombreCliente, cliente); //nombre copiado
 
     cliente1->cantidadItems = cantidadItems;
@@ -50,9 +50,9 @@ struct pedido *crearPedido(int numero, const char *cliente, int cantidadItems){
     cliente1->item = new struct item[cantidadItems]; // reservo para n items
 
     //forma mecanica
-    cliente1->item[0] = crearItem("Laptop", 1, 100); 
-    cliente1->item[1] = crearItem("Mouse", 2, 200);
-    cliente1->item[2] = crearItem("Teclado", 3 , 300);
+    cliente1->item[0] = crearItem("Laptop", 5, 200); 
+    cliente1->item[1] = crearItem("Mouse", 4, 180);
+    cliente1->item[2] = crearItem("Teclado", 2 , 150);
 
 
 
@@ -70,12 +70,12 @@ double calcularTotal(const struct pedido *p){
 struct item *itemMasCaro(struct pedido *lista){
     struct item *nuevo = new struct item; // reservo memoria
 
-    nuevo = &lista->item[0];  //dudo si ponerle el &
-    // diremos que el precio mas alto es el prinmero (hacemos una copia)
+    nuevo = &lista->item[0];
+    // diremos que el precio mas alto es el prinmero, nuevo apunta al primer elemento
 
     for(int i=0; i< lista->cantidadItems; i++){
         if(lista->item[i].precioUnitario > nuevo->precioUnitario){
-            nuevo = &lista->item[i]; //dudo si ponerle el &
+            nuevo = &lista->item[i]; // nuevo apunta al elemento i
         }
     }
 
@@ -86,7 +86,7 @@ void liberarPedido(struct pedido *lista){
     for(int i=0; i< lista->cantidadItems; i++){
         delete lista->item[i].descripcion; // 
     }
-    delete lista->nombreCliente;
+    delete[] lista->nombreCliente;
     delete lista;
 }
 
@@ -117,6 +117,6 @@ int main(){
 
 
     liberarPedido(cliente1);
-    delete caro;
     return 0;
 }
+
