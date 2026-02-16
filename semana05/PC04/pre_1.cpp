@@ -196,6 +196,7 @@ void liberarEspacio(struct polinomio *array, int n){
     for(int i=0; i< n; i++){
         delete[] array[i].coef;
     }
+    delete[] array;
 
 }
 

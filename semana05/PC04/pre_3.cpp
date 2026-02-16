@@ -19,14 +19,14 @@ struct producto{
 struct producto crearProducto(int codigo, const char *nombre, double precio, int stock){ 
     // lo const char *, es por que definimos la funcion
     // si deseas ingresar nombres, usamos  char *
-    struct producto nuevo;
+    struct producto nuevo; // esto es una variable
 
     nuevo.codigo = codigo;
     nuevo.precio = precio;
     nuevo.stock =  stock;
 
     // lo siguiente parece funcionar con char , char []
-    nuevo.nombre = new char; //reservo 30 espacios
+    nuevo.nombre = new char[30]; //reservo 30 espacios
     strcpy(nuevo.nombre, nombre);
 
     return nuevo;
@@ -49,15 +49,22 @@ struct producto *crearInventario(int n){
 struct producto *buscarProducto(struct producto *lista, int n, int codigoBuscado){
     struct producto *nuevo = new struct producto;
 
+    bool bandera=false;
     for (int i=0; i<n ; i++){
         if(lista[i].codigo == codigoBuscado){
-            nuevo = &lista[i];
-            return nuevo;
+            nuevo =&lista[i];  // el puntero nuevo y lista[i] apunta a la misma direccion
+                                // lo que implica que delete[] nuevo, lista[i] es borrar 
+                                // dos veces la misma informacion
+            bandera=true;
         }
     } 
-    nuevo=nullptr;
-
-    return nuevo;
+    if(bandera){
+        return nuevo;
+    } else {
+        nuevo =nullptr;
+        return nuevo;
+    }
+    
 }
 
 
@@ -88,15 +95,17 @@ int main(){
 
     imprimir(lista, n);
 
-    int codigo=102;
+    int codigo=109;
     cout <<"\nBuscando producto con codigo "<< codigo<<" ...\n";
 
     struct producto *buscado = buscarProducto(lista, n, codigo);
     
-    cout << "Producto encontrado: "<<buscado->nombre << " | Precio: "<<buscado->precio<< endl;
+    if(buscado !=nullptr){
+        cout << "Producto encontrado: "<<buscado->nombre << " | Precio: "<<buscado->precio<< endl;
+    }
 
+    liberarInventario(lista, n);
 
-
-    delete buscado;
+    // mi error estaba en que borraba dos veces un mismo puntero
     return 0;
 }
