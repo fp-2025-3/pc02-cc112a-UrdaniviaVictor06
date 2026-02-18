@@ -47,23 +47,17 @@ struct producto *crearInventario(int n){
 }
 
 struct producto *buscarProducto(struct producto *lista, int n, int codigoBuscado){
-    struct producto *nuevo = new struct producto;
-
-    bool bandera=false;
+    /*  El problema de esta funcion era que creaba un espacio (dir_1) para un struct A
+    pero luego cambiaba la direccion de A por otra (dir_2), lo que implica que 
+    delete A; solo borra dir_2, mas aun queda la reserva de dir_1 (espacio sin borrar)
+    Mi solucion fue no crear  un espacio (dir_1) adicional*/
+    
     for (int i=0; i<n ; i++){
         if(lista[i].codigo == codigoBuscado){
-            nuevo =&lista[i];  // el puntero nuevo y lista[i] apunta a la misma direccion
-                                // lo que implica que delete[] nuevo, lista[i] es borrar 
-                                // dos veces la misma informacion
-            bandera=true;
+            return &lista[i];  
         }
     } 
-    if(bandera){
-        return nuevo;
-    } else {
-        nuevo =nullptr;
-        return nuevo;
-    }
+    return nullptr;
     
 }
 
@@ -98,7 +92,7 @@ int main(){
     int codigo=109;
     cout <<"\nBuscando producto con codigo "<< codigo<<" ...\n";
 
-    struct producto *buscado = buscarProducto(lista, n, codigo);
+    struct producto *buscado = buscarProducto(lista, n, codigo); // creo un puntero no?
     
     if(buscado !=nullptr){
         cout << "Producto encontrado: "<<buscado->nombre << " | Precio: "<<buscado->precio<< endl;
@@ -106,6 +100,7 @@ int main(){
 
     liberarInventario(lista, n);
 
-    // mi error estaba en que borraba dos veces un mismo puntero
+    // 
+    
     return 0;
 }
