@@ -68,24 +68,24 @@ double calcularTotal(const struct pedido *p){
 }
 
 struct item *itemMasCaro(struct pedido *lista){
-    struct item *nuevo = new struct item; // reservo memoria
 
-    nuevo = &lista->item[0];
+    int indice =0;
     // diremos que el precio mas alto es el prinmero, nuevo apunta al primer elemento
 
     for(int i=0; i< lista->cantidadItems; i++){
-        if(lista->item[i].precioUnitario > nuevo->precioUnitario){
-            nuevo = &lista->item[i]; // nuevo apunta al elemento i
+        if(lista->item[i].precioUnitario > lista->item[indice].precioUnitario ){
+            indice = i; // nuevo apunta al elemento i
         }
     }
 
-    return nuevo;
+    return &lista->item[indice];
 }
 
 void liberarPedido(struct pedido *lista){
     for(int i=0; i< lista->cantidadItems; i++){
-        delete lista->item[i].descripcion; // 
+        delete[] lista->item[i].descripcion; // 
     }
+    delete[] lista->item; // me falto borrar el arreglo de listas
     delete[] lista->nombreCliente;
     delete lista;
 }
@@ -106,7 +106,7 @@ void imprimirCliente(struct pedido *cliente){
 
 int main(){
 
-    struct pedido *cliente1 = crearPedido(101, "Carlos Perez", 3);
+    struct pedido *cliente1 = crearPedido(101, "Carlos Perez", 3); 
     
     imprimirCliente(cliente1);
     
