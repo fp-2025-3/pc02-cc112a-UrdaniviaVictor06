@@ -30,63 +30,70 @@ struct seleccion{
 
 void rellenarDatos(struct seleccion *lista, int n){
     for(int i=0; i<n; i++){
-        // id para identificar
-        lista[i].id= i+1;
-
         //nombre dinamico
-        lista[i].nombre = new char; // memoria reservada
-        strcpy(lista[i].nombre, "Pais_");
+        lista[i].nombre = new char[10]; // memoria reservada
+        string temporal = "Pais_" + to_string(i+1);
+        strcpy(lista[i].nombre, temporal.c_str());
 
 
-        // se supone funciona como array
-        lista[i].jugados.ganados = rand()%81 ; // del 0 al 80
+
+        // partidos ganados random
+        lista[i].jugados.ganados = 40 +rand()%41 ; // del 0 al 80, minimo 40
         int temp= 100 - lista[i].jugados.ganados;  
+        // partidos perdidos ramdom
         lista[i].jugados.perdidos =  rand()%temp; // del 0 al temp-1
+        // perdidos + ganados = 99, como maximo => queda al menos 1 partido empatado
         lista[i].jugados.empatados = 100 - ( lista[i].jugados.ganados + lista[i].jugados.perdidos );
-        //suman 100
+        
 
-        // arrays temporales de goles
+        // valores para acumular los goles a favor y en contra
         int golesGanados = 0;
         int golesContra = 0;
 
-        //partidos ganados
+        //partidos ganados, GF > GC
         for(int j=0; j< lista[i].jugados.ganados; j++){
             lista[i].totales.favor = rand()%6; // de 0 a 5
             lista[i].totales.contra = rand()%6; // de 0 a 5 
 
-            while(lista[i].totales.favor < lista[i].totales.contra){
+            while(lista[i].totales.favor < lista[i].totales.contra){ 
+                // si GF < GC => repite el proceso
                 lista[i].totales.favor = rand()%6; // de 0 a 5
                 lista[i].totales.contra = rand()%6; // de 0 a 5 
             }
 
+            // acumulando los puntos
             golesGanados += lista[i].totales.favor;
             golesContra += lista[i].totales.contra;
         }
 
-         //partidos perdidos
+         //partidos perdidos, GF < GC
         for(int j=0; j< lista[i].jugados.perdidos; j++){
             lista[i].totales.favor = rand()%6; // de 0 a 5
             lista[i].totales.contra = rand()%6; // de 0 a 5 
 
             while(lista[i].totales.favor > lista[i].totales.contra){
+                // si GF > GC => repite proceso
                 lista[i].totales.favor = rand()%6; // de 0 a 5
                 lista[i].totales.contra = rand()%6; // de 0 a 5 
             }
 
+            // acumulando los puntos
             golesGanados += lista[i].totales.favor;
             golesContra += lista[i].totales.contra;
         }
 
-        //partidos empatados
+        //partidos empatados, GF = GC
         for(int j=0; j< lista[i].jugados.empatados; j++){
             lista[i].totales.favor = rand()%6; // de 0 a 5
             lista[i].totales.contra = rand()%6; // de 0 a 5 
 
             while(lista[i].totales.favor != lista[i].totales.contra){
+                // si GF != GC => repite proceso
                 lista[i].totales.favor = rand()%6; // de 0 a 5
                 lista[i].totales.contra = rand()%6; // de 0 a 5 
             }
 
+            // acumulando los puntos
             golesGanados += lista[i].totales.favor;
             golesContra += lista[i].totales.contra;
         }
@@ -97,36 +104,35 @@ void rellenarDatos(struct seleccion *lista, int n){
         lista[i].totales.diferencia = golesGanados - golesContra;
 
         //puntaje total
-
         lista[i].puntajeTotal= 3 * lista[i].jugados.ganados + lista[i].jugados.empatados; 
 
         //rendimiento total
-
         lista[i].rendimiento = float ( lista[i].puntajeTotal )/3;
     }
 }
 
 void ordenarLista(struct seleccion *lista, int n){
     
-    for(int i=0; i<n-1; i++){ //recorre toda la funcion
-        struct seleccion maximo=lista[i];
-        int indice = i;
+    // ordenamiento por selection sort
+    for(int i=0; i<n-1; i++){ //recorre toda la lista
+        int indice_max = i; // tomemos como maximo al primer elemento de cada for
         for(int j=i; j<n; j++){
-            if(lista[j].puntajeTotal > maximo.puntajeTotal){
-                maximo = lista[j];
-                indice = j;
+            if(lista[j].puntajeTotal > lista[indice_max].puntajeTotal){
+                indice_max = j;
             }
 
         }
         //ya tengo el maximo
-        swap(lista[i], lista[indice]);
+        swap(lista[i], lista[indice_max]);
     }
 
-    //ahora ordenar por diferencia de goles
+    //ahora ordenar por diferencia de goles, burble sort
     for(int j=0; j<n-1; j++){
         for(int i=0; i<n-1; i++){
-            if(lista[i].puntajeTotal == lista[i+1].puntajeTotal){
+            if(lista[i].puntajeTotal == lista[i+1].puntajeTotal){ 
+                // si mismo puntaje => entra
                 if(lista[i].totales.diferencia < lista[i+1].totales.diferencia){
+                    // si mismo puntaje y diferencia de goles 
                     swap(lista[i], lista[i+1]);
                 }
             
@@ -135,7 +141,7 @@ void ordenarLista(struct seleccion *lista, int n){
     }
 
 
-    //ahora ordenar por goles a favor
+    //ahora ordenar por goles a favor, burble sort
     for(int j=0; j<n-1; j++){
         for(int i=0; i<n-1; i++){
             if(lista[i].puntajeTotal == lista[i+1].puntajeTotal){
@@ -152,15 +158,15 @@ void ordenarLista(struct seleccion *lista, int n){
 }
 
 void imprimirCampeon(struct seleccion *lista, int n){
-    struct seleccion maximo=lista[0];
-    for(int i=0; i<n; i++){
+    struct seleccion maximo=lista[0]; // definimos como maximo al primer elemento
+    for(int i=0; i<n; i++){ 
         if(lista[i].puntajeTotal > maximo.puntajeTotal){
             maximo =lista[i];
         }
     }
 
     //ya tenemos al maximo
-    cout <<"\nCampeon : "<<maximo.nombre << maximo.id;
+    cout <<"\nCampeon : "<<maximo.nombre;
     cout << " | Puntaje : " << maximo.puntajeTotal;
     cout << " | DG : "<<maximo.totales.diferencia; 
     cout << " | Rendimiento : "<< maximo.rendimiento;
@@ -184,7 +190,7 @@ void imprimirLista(struct seleccion *lista, int n){
     }
     cout << endl;
     for(int i=0; i<n; i++){
-        cout << lista[i].nombre<< lista[i].id;
+        cout << lista[i].nombre;
         cout << setw(8) << lista[i].jugados.ganados;
         cout << setw(6) << lista[i].jugados.empatados;
         cout << setw(6) << lista[i].jugados.perdidos;
@@ -195,6 +201,13 @@ void imprimirLista(struct seleccion *lista, int n){
         cout << setw(11) <<fixed << setprecision(2)<<  lista[i].rendimiento;
         cout << endl;
     }
+}
+
+void liberarMemoria(struct seleccion *lista, int n){
+    for(int i=0; i< n; i++){
+        delete[] lista[i].nombre; 
+    }
+    delete[] lista;
 }
 
 
@@ -212,5 +225,8 @@ int main(){
 
     imprimirCampeon(lista, n);
 
+    liberarMemoria(lista, n);
+
     return 0;
 }
+    
