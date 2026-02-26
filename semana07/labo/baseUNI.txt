@@ -1,0 +1,6 @@
+1.Ford White,Rosa-12.5-18.4
+2.Perez Prado,Benito-12.3-09.8
+3.Salinas Jaroso,Ramon-12.2-16.7
+4.Zertuche Smith,Felipe-19.4-14.2
+5.Vega Escalante,Adriana-15-16.8
+6.Palma Samaniego,Laura-05.3-20
