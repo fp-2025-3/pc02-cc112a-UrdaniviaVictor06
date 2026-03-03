@@ -152,7 +152,7 @@ void calcularPromedio(struct Alumno *lista, int n){
     for(int i=0; i< n; i++){
 
         float promedio; 
-        float suma =lista[i].nota1 +lista[i].nota2 +lista[3].nota3;
+        float suma =lista[i].nota1 + lista[i].nota2 + lista[i].nota3;
         promedio = suma/3;
         
 
@@ -189,7 +189,7 @@ void generarReporte(string nombre_archivo, struct Alumno *lista, int n){
 
     for(int i=0; i < n; i++){
         float promedio; 
-        float suma =lista[i].nota1 +lista[i].nota2 +lista[3].nota3;
+        float suma =lista[i].nota1 +lista[i].nota2 +lista[i].nota3;
         promedio = suma/3;
         promedioT=promedioT + promedio; // vas acumulando el promedio de la gente
 

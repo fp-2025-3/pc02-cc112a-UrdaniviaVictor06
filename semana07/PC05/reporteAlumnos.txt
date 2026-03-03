@@ -1,35 +1,35 @@
-1001       Juan   13.33                           APROBADO
-1002      Maria   10.00                           APROBADO
-1003       Luis   15.33                           APROBADO
+1001       Juan   15.67                           APROBADO
+1002      Maria   10.67                           APROBADO
+1003       Luis   19.00                           APROBADO
 1004        Ana    8.33                        DESAPROBADO
-1005     Carlos   12.67                           APROBADO
-1006      Lucia   10.33                           APROBADO
-1007      Pedro    6.33                        DESAPROBADO
-1008      Sofia   15.00                           APROBADO
-1009      Diego   12.33                           APROBADO
-1010    Valeria    8.67                        DESAPROBADO
-1011     Andres   10.67                           APROBADO
-1012     Carmen   13.33                           APROBADO
-1013    Ricardo    8.67                        DESAPROBADO
-1014      Elena   14.67                           APROBADO
-1015     Miguel    6.67                        DESAPROBADO
-1016   Patricia   12.00                           APROBADO
-1017   Fernando    9.33                        DESAPROBADO
-1018    Daniela   15.67                           APROBADO
-1019      Jorge    5.67    DESAPROBADO POR REGLA ACADEMICA
-1020      Paola   12.00                           APROBADO
-1021      Marco   10.67                           APROBADO
-1022       Rosa    7.33                        DESAPROBADO
-1023      Julio   13.33                           APROBADO
-1024     Teresa    9.33                        DESAPROBADO
-1025       Hugo   14.67                           APROBADO
-1026     Alicia   11.33                           APROBADO
+1005     Carlos   15.33                           APROBADO
+1006      Lucia   12.00                           APROBADO
+1007      Pedro    6.00                        DESAPROBADO
+1008      Sofia   19.00                           APROBADO
+1009      Diego   15.00                           APROBADO
+1010    Valeria    9.00                        DESAPROBADO
+1011     Andres   13.00                           APROBADO
+1012     Carmen   17.00                           APROBADO
+1013    Ricardo    9.00                        DESAPROBADO
+1014      Elena   19.00                           APROBADO
+1015     Miguel    6.00                        DESAPROBADO
+1016   Patricia   15.00                           APROBADO
+1017   Fernando   11.00                           APROBADO
+1018    Daniela   19.67                           APROBADO
+1019      Jorge    5.00    DESAPROBADO POR REGLA ACADEMICA
+1020      Paola   14.00                           APROBADO
+1021      Marco   12.00                           APROBADO
+1022       Rosa    8.00                        DESAPROBADO
+1023      Julio   17.00                           APROBADO
+1024     Teresa   10.00                           APROBADO
+1025       Hugo   18.00                           APROBADO
+1026     Alicia   13.00                           APROBADO
 1027      Bruno    6.00                        DESAPROBADO
-1028    Claudia   12.67                           APROBADO
-1029       Ivan    8.00                        DESAPROBADO
-1030     Monica   14.00                           APROBADO
+1028    Claudia   15.00                           APROBADO
+1029       Ivan    9.00                        DESAPROBADO
+1030     Monica   17.00                           APROBADO
 
 Total de estudiantes : 30
-Promedio general del curso: 10.94
-Promedio maxima:  Daniela = 15.67
-Promedio minimo:  Jorge = 5.67
+Promedio general del curso: 12.79
+Promedio maxima:  Daniela = 19.67
+Promedio minimo:  Jorge = 5.00
