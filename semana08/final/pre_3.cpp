@@ -20,23 +20,8 @@ struct proyecto{ // 64 bytes
 void crear_archivo(string nombre_archivo){
     fstream archivo; // objeto lectura y escritura
 
-    archivo.open(nombre_archivo, ios::binary | ios::in); 
-    // si el archivo se abre, significa que ya esta creado
-
-    if(!archivo){
-        // si el archivo no abre, es porque no esta creado
-        cout << "\nopcion 2\n";
-        archivo.close(); // desvinculamos
-
-        archivo.open(nombre_archivo, ios::binary | ios::out); 
-        // creamos el archivo en modo bimario
-        archivo.close(); // desvinculamos nuevamente;
-    } else {
-        // significa que ya esta creado
-        archivo.close(); // desvinculamos y ya
-        cout << "\nopcion 1\n";
-    }
-
+    archivo.open(nombre_archivo, ios::binary | ios::out); 
+    archivo.close(); // creamos un archivo binario
     
 }
 
@@ -49,7 +34,7 @@ struct proyecto *agregar_proyectos(string nombre_archivo, int &n_final){
 
     n_final =n; // actualizamos la cantidad
 
-    struct proyecto *lista = new struct proyecto[n]; // crea una lista de n proyectos
+    struct proyecto *lista = new struct proyecto[n](); // crea una lista de n proyectos todos en 0
     for(int i=0; i< n;i++){
         lista[i].presupuesto = -1;
         while(lista[i].presupuesto <=0){
@@ -85,7 +70,7 @@ struct proyecto *agregar_proyectos(string nombre_archivo, int &n_final){
     
         lista[i].duracionMeses =-1;
         while(lista[i].duracionMeses <=0){
-            cout << "ingrese la duracion en meses de su proyecto: ";
+            cout << "\ningrese la duracion en meses de su proyecto: ";
             cin >> lista[i].duracionMeses;
         }
 
@@ -109,22 +94,24 @@ struct proyecto *agregar_proyectos(string nombre_archivo, int &n_final){
         }
 
         //ya tenemos al mayor, ahora swap
-        swap(lista[i].presupuesto, lista[indice_max].presupuesto);
-        swap(lista[i].id, lista[indice_max].id);
-        swap(lista[i].duracionMeses, lista[indice_max].duracionMeses);
+        if(i == indice_max){
+            ;
+        } else {
+            swap(lista[i].presupuesto, lista[indice_max].presupuesto);
+            swap(lista[i].id, lista[indice_max].id);
+            swap(lista[i].duracionMeses, lista[indice_max].duracionMeses);
 
-        // swap con char
-        char temp[40];
-        strcpy(temp, lista[i].titulo);
-        strcpy(lista[i].titulo, lista[indice_max].titulo);
-        strcpy(lista[indice_max].titulo, temp);
-
+            // swap con char
+            char temp[40];
+            strcpy(temp, lista[i].titulo);
+            strcpy(lista[i].titulo, lista[indice_max].titulo);
+            strcpy(lista[indice_max].titulo, temp);
+        }
     }
 
     // ya tenemos la lista ordenada
     for(int i=0; i< n; i++){
         // la lista a ingresar es 
-        // lista[lista_ind[i]] 
         archivo.write((char*)&lista[i], sizeof(struct proyecto));
         // copia la lista en bytes y mueve el puntero 
     }
@@ -132,6 +119,24 @@ struct proyecto *agregar_proyectos(string nombre_archivo, int &n_final){
 
     archivo.close();
     return lista;
+}
+
+struct proyecto *expandir(struct proyecto *lista, int &n, int k){
+    struct proyecto *copia = new struct proyecto[n+k]; // memoria dinamica
+
+    // vamos a copiar
+    for(int i=0; i< n; i++){
+        copia[i].presupuesto = lista[i].presupuesto;
+        copia[i].id = lista[i].id;
+        copia[i].duracionMeses = lista[i].duracionMeses;
+
+        // ahora con el titulo
+        strcpy(copia[i].titulo, lista[i].titulo);
+    }
+    n=n+k;
+
+    delete[] lista;
+    return copia;
 }
 
 void insertarProyecto(string nombre_archivo, int &n, struct proyecto *lista){
@@ -168,46 +173,57 @@ void insertarProyecto(string nombre_archivo, int &n, struct proyecto *lista){
 
     prueba.duracionMeses = -1;
     while(prueba.duracionMeses <=0){
-        cout << "Ingrese la duracion en meses de su proyecto: ";
+        cout << "\nIngrese la duracion en meses de su proyecto: ";
         cin >>prueba.duracionMeses;
     }
 
+
+    // ahora tenemos que insertar el proyecto
     fstream archivo; // objeto de lectura y escritura
 
-    archivo.open(nombre_archivo, ios::binary | ios::out | ios::in);
-    // modo bianrio
+    archivo.open(nombre_archivo, ios::binary | ios::app);
+    // modo bianrio y agregar algo
+    archivo.write((char*)&prueba, sizeof(struct proyecto));
+    // insertamos un espacio en el binario para poder ordenarlo
 
-    struct proyecto copia1;
-    
-    while(archivo.read((char*)&copia1, sizeof(struct proyecto))){
-        // copia 1 tiene toda la info
 
-        
-        if(copia1.presupuesto < prueba.presupuesto ){
-            // 
+    archivo.close(); 
+
+    archivo.open(nombre_archivo, ios::binary | ios::out | ios::in); 
+    // modo binario
+
+    struct proyecto copia;
+    while( archivo.read((char*)&copia, sizeof(struct proyecto)) ){
+        //copia tiene toda la infor ahora
+
+        if(copia.presupuesto < prueba.presupuesto){
+            //significa que prueba entra donde copia y mueve todo un espacio a la derecha
+            
             int posicion = archivo.tellg();
             posicion = posicion - sizeof(struct proyecto);
             
             archivo.seekp(posicion);
-            archivo.seekg(posicion);
+            archivo.seekg(posicion); 
 
-            // escribimos la prueba, luego la copia1 se pasa a prueba, sigue su rumbo
-            archivo.write((char*)&prueba, sizeof(struct proyecto)); 
-            // copiamos en binario
+            archivo.write((char*)&prueba, sizeof(struct proyecto));
 
-            // copiamos copia en prueba
-            prueba.presupuesto = copia1.presupuesto;
-            prueba.id = copia1.id;
-            prueba.duracionMeses = copia1.duracionMeses;
+            // ahora pasamos copia a prueba
+            prueba.id = copia.id;
+            prueba.duracionMeses = copia.duracionMeses;
+            prueba.presupuesto = copia.presupuesto;
 
-            char temp[40];
-            strcpy(prueba.titulo, copia1.titulo);
-            // listo ya cambiamos
-
+            strcpy(prueba.titulo, copia.titulo); 
+            // con esto prueba tiene toda la info de copia
         }
+
+        // si sales de este bucle la posicion de los punteros no se modifica para nada
     }
-    
-    archivo.close(); 
+
+
+
+
+
+    archivo.close();
 
 }
 
@@ -244,7 +260,7 @@ int main(){
 
     insertarProyecto(nombre_archivo,n,lista);
 
-    mostrar_proyectos(nombre_archivo);
+    mostrar_proyectos(nombre_archivo); // vamos a probar mi caso hipotetico
 
 
     delete[] lista;
